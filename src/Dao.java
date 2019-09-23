@@ -1,12 +1,10 @@
-import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-//import javax.swing.JOptionPane;
-
 import javax.swing.JOptionPane;
+
+import db.DB;
 
 public class Dao {
 
@@ -38,31 +36,25 @@ public class Dao {
 	public void remover(String cpf) {
 		boolean removido = false;
 		for (int i = 0; i < lista.size(); i++) {
-                    if (lista.get(i).getCpf().equals(cpf)) {
-			lista.remove(i);
-			JOptionPane.showMessageDialog(null, "CPF Excluido com Sucesso!");
-			removido = true;
-                    } 
-		}if (!removido) {
-			JOptionPane.showMessageDialog(null, "CPF n�o encontrado!");
+			if (lista.get(i).getCpf().equals(cpf)) {
+				lista.remove(i);
+				JOptionPane.showMessageDialog(null, "CPF Excluido com Sucesso!");
+				removido = true;
+			}
+		}
+		if (!removido) {
+			JOptionPane.showMessageDialog(null, "CPF nao encontrado!");
 		}
 	}
-	
-	public void salvarNoBd(Pessoa pessoa) throws SQLException{
-		Connection conexao = null;
-            try {
-            conexao = DriverManager.getConnection("jdbc:mysql://localhost/lp2", "root", "1311");
-            String sql = "insert into aluno (idpessoa, nome, idade, cpf)" + "values (2, ?,?,?)";
-            PreparedStatement ps = conexao.prepareStatement(sql);
-            ps.setString(1, pessoa.getNome());
-            ps.setInt(2, pessoa.getIdade());
-            ps.setString(3, pessoa.getCpf());
-            int retorno = ps.executeUpdate();
-            if (retorno > 0) {
-            	JOptionPane.showMessageDialog(null, "Salvo com Sucesso! ");
-            }
-            } catch (SQLException ex) {
-            	JOptionPane.showMessageDialog(null, ex.getMessage());
-			}
+
+	public void salvarNoBd(Pessoa pessoa) {
+		
+		try {
+			DriverManager.getConnection("jdbc:mysql://localhost:3306/cursoalunoprofessor" , "root", "1311");
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(null, e.getMessage());
+		} finally {
+			DB.closeConnection();
+		}
 	}
 }
